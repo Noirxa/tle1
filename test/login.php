@@ -1,5 +1,6 @@
 <?php
 //hello
+global $db;
 session_start();
 
 require_once "includes/database.php";

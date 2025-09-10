@@ -2,7 +2,7 @@
 $dbHost = 'localhost';
 $dbUser = 'root';
 $dbPass = '';
-$dbName = 'social';
+$dbName = 'tle1';
 
 $db = mysqli_connect($dbHost, $dbUser, $dbPass, $dbName);
 

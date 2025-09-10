@@ -1,9 +1,8 @@
 <?php
-
 session_start();
-
-/** @var mysqli $db */
 require_once 'includes/database.php';
+global $db;
+
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -11,35 +10,64 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-
 $content = $media_url = "";
 $errors = [];
+$success = "";
 
 if (isset($_POST['submit'])) {
-    $content = isset($_POST['content']) ? $_POST['content'] : '';
-    $media_url = isset($_POST['media_url']) ? $_POST['media_url'] : '';
+    $content = trim($_POST['content'] ?? '');
 
+    // --- standaard leeg, vullen via URL of upload ---
+    $media_url = "";
+
+    // 1. Check content
     if (empty($content)) {
         $errors['content'] = 'Content cannot be empty';
     }
 
+    // 2. Foto upload vanaf bestanden
+    if (isset($_FILES['media_file']) && $_FILES['media_file']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = "uploads/";
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $fileName = time() . "_" . basename($_FILES['media_file']['name']);
+        $targetPath = $uploadDir . $fileName;
+
+        $fileType = strtolower(pathinfo($targetPath, PATHINFO_EXTENSION));
+        $allowed = ['jpg','jpeg','png','gif'];
+
+        if (in_array($fileType, $allowed)) {
+            if (move_uploaded_file($_FILES['media_file']['tmp_name'], $targetPath)) {
+                $media_url = $targetPath; // dit wordt in DB opgeslagen
+            } else {
+                $errors['media'] = "Upload failed.";
+            }
+        } else {
+            $errors['media'] = "Only JPG, PNG, GIF allowed.";
+        }
+    }
+
+    // 3. Media URL uit tekstveld (indien ingevuld en geen upload)
+    if (empty($media_url) && !empty($_POST['media_url'])) {
+        $media_url = trim($_POST['media_url']);
+    }
+
+    // 4. Opslaan in DB
     if (empty($errors)) {
         $query = "INSERT INTO posts (user_id, content, media_url) VALUES (?, ?, ?)";
         $stmt = mysqli_prepare($db, $query);
 
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "iss", $user_id, $content, $media_url);
-
             if (mysqli_stmt_execute($stmt)) {
-                echo "<p class='notification is-success'>Post successfully added!</p>";
                 $content = $media_url = "";
+                $success = "Post successfully added!";
             } else {
-                echo "<p class='notification is-danger'>Error: " . mysqli_error($db) . "</p>";
+                $errors['db'] = "Database error: " . mysqli_error($db);
             }
-
             mysqli_stmt_close($stmt);
-        } else {
-            echo "<p class='notification is-danger'>Prepare failed: " . mysqli_error($db) . "</p>";
         }
     }
 }
@@ -49,29 +77,56 @@ if (isset($_POST['submit'])) {
 <head>
     <meta charset="UTF-8">
     <title>Create Post</title>
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-<div class="container">
-    <h2>Create a new post</h2>
-    <form action="" method="post">
 
-        <div class="field">
-            <label for="content">Post Content</label>
-            <textarea id="content" name="content" rows="4"><?php echo htmlspecialchars($content); ?></textarea>
-            <p class="help is-danger"><?php echo isset($errors['content']) ? $errors['content'] : ''; ?></p>
-        </div>
-
-        <div class="field">
-            <label for="media_url">Media URL (optional)</label>
-            <input id="media_url" type="text" name="media_url" value="<?php echo htmlspecialchars($media_url); ?>"/>
-        </div>
-
-        <div class="field">
-            <button class="button is-link" type="submit" name="submit">Save Post</button>
-        </div>
-    </form>
-
-    <a class="button" href="index.php">Back to feed</a>
+<!-- Sidebar direct in create.php -->
+<div class="sidebar">
+    <h2>MadeByMe</h2>
+    <a href="index.php">🏠 Home</a>
+    <a href="create.php" class="active">➕ Create</a>
+    <a href="verify.php">✔ Verify</a>
+    <a href="profile.php">👤 Profile</a>
 </div>
+
+<!-- Content -->
+<div class="container">
+    <div class="create-card">
+        <h2>Create Something Human</h2>
+        <p>Share your authentic creativity with the world. Embrace imperfection, celebrate humanity.</p>
+
+        <?php if (!empty($success)) echo "<p style='color: lightgreen;'>$success</p>"; ?>
+        <?php if (!empty($errors['db'])) echo "<p style='color: red;'>{$errors['db']}</p>"; ?>
+
+        <form action="" method="post" enctype="multipart/form-data">
+            <label for="content">Post Content</label>
+            <textarea name="content" rows="4"
+                      placeholder="Share your thoughts..."><?php echo htmlspecialchars($content); ?></textarea>
+            <small style="color: red;"><?php echo $errors['content'] ?? ''; ?></small>
+
+            <label for="media_file">Upload a photo (optional)</label>
+            <input type="file" name="media_file" id="media_file" accept="image/*">
+            <small style="color: red;"><?php echo $errors['media'] ?? ''; ?></small>
+
+            <label for="media_url">Or paste image URL (optional)</label>
+            <input type="text" name="media_url" placeholder="Media URL"
+                   value="<?php echo htmlspecialchars($media_url); ?>">
+
+            <button class="button" type="submit" name="submit">Share with Humans</button>
+        </form>
+    </div>
+
+    <div class="tips-card">
+        <h3>Tips for Authentic Content</h3>
+        <ul>
+            <li>Share your creative process, not just the final result</li>
+            <li>Embrace mistakes and imperfections – they make you human</li>
+            <li>Tell the story behind your creation</li>
+            <li>Use natural lighting and authentic settings</li>
+        </ul>
+    </div>
+</div>
+
 </body>
 </html>
