@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Gegenereerd op: 10 sep 2025 om 06:56
+-- Gegenereerd op: 10 sep 2025 om 07:55
 -- Serverversie: 8.4.2
 -- PHP-versie: 8.3.25
 
@@ -40,7 +40,8 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `user_id`, `content`, `media_url`, `created_at`) VALUES
-(8, 1, 'op', '', '2025-09-10 06:55:38');
+(8, 1, 'op', '', '2025-09-10 06:55:38'),
+(9, 1, 'LEZ GO', '', '2025-09-10 06:58:37');
 
 -- --------------------------------------------------------
 
@@ -51,7 +52,7 @@ INSERT INTO `posts` (`id`, `user_id`, `content`, `media_url`, `created_at`) VALU
 CREATE TABLE `users` (
   `id` int NOT NULL,
   `email` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `username` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -60,7 +61,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `username`) VALUES
-(1, 'demo@example.com', 'test123', 'demo_user');
+(1, 'demo@example.com', 'test123', 'demo_user'),
+(2, 'loki@gmail.com', '$2y$10$4kcPoslE.dVYNzfJpNVwVeyZgt9KFQFVYGs.3HKCSMT0..DuUaxNm', '1090155');
 
 --
 -- Indexen voor geëxporteerde tabellen
@@ -87,13 +89,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT voor een tabel `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT voor een tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Beperkingen voor geëxporteerde tabellen

@@ -1,8 +1,15 @@
 <?php
+session_start();
+
 /** @var mysqli $db */
 require_once 'includes/database.php';
 
-$user_id = 1;
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
 
 $content = $media_url = "";
 $errors = [];

@@ -1,6 +1,13 @@
 <?php
+session_start();
+
 global $db;
 require_once 'includes/database.php';
+
+if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== true) {
+    header('Location: login.php');
+    exit;
+}
 
 $query = "SELECT posts.id, posts.content, posts.media_url, posts.created_at, users.username
           FROM posts
@@ -103,6 +110,7 @@ if (!$result) {
     <a href="create.php">➕ Create</a>
     <a href="#">✔ Verify</a>
     <a href="#">👤 Profile</a>
+    <a href="logout.php">⏻ log out</a>
 </div>
 
 <!-- Hoofdcontent -->
