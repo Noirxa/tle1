@@ -1,4 +1,5 @@
 <?php
+global $db;
 require_once 'includes/database.php';
 
 $query = "SELECT posts.id, posts.content, posts.media_url, posts.created_at, users.username
@@ -84,24 +85,7 @@ if (!$result) {
 <!--</html>-->
 
 
-<?php
-// Verbind met de database
-include 'includes/database.php';
 
-// SQL query om alle posts + gebruikersnaam op te halen
-$sql = "SELECT posts.content, posts.media_url, posts.created_at, users.username
-        FROM posts
-        JOIN users ON posts.user_id = users.id
-        ORDER BY posts.created_at DESC";
-
-// Voer de query uit
-$result = mysqli_query($db, $sql);
-
-// Check of query gelukt is
-if (!$result) {
-    die("Fout bij ophalen posts: " . mysqli_error($db));
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

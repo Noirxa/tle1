@@ -123,6 +123,92 @@ h1 {
     color: #94a3b8;
 }
 
+/*Create pagina */
+/* Create Card */
+.create-card {
+    background-color: #1e293b;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    max-width: 600px;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.create-card label {
+    color: #38bdf8;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.create-card textarea {
+    padding: 12px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: none;
+    color: #f1f5f9;
+    resize: vertical;
+    width: 100%;
+}
+
+.media-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.media-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #444;
+    background-color: #0f172a;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.media-btn.active {
+    background-color: #8b5cf6;
+    border-color: #8b5cf6;
+    color: #fff;
+}
+
+.media-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.create-card small {
+    color: #94a3b8;
+}
+
+.tips-card {
+    background-color: #1e293b;
+    padding: 20px;
+    border-radius: 16px;
+    max-width: 600px;
+    color: #f1f5f9;
+    margin-bottom: 40px;
+}
+
+.tips-card h3 {
+    margin-bottom: 12px;
+    color: #38bdf8;
+}
+
+.tips-card ul {
+    padding-left: 20px;
+}
+
+.tips-card li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+
 /* ========== Responsive (telefoon) ========== */
 @media (max-width: 768px) {
     /* Sidebar bovenaan ipv links */
